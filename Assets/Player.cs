@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,18 @@ public class Player : MonoBehaviour
     private KeyCode jumpKey = KeyCode.Space;
     private Rigidbody2D rb;
     private Animator anim;
+    private SpriteRenderer sr;
+
+    private bool isDead;
+
+    [Header("Knockback")]
+    [SerializeField] private Vector2 knockbackDir;
+    private bool isKnocked;
+    private bool canBeKnocked = true;
 
     //################################################################//
 
-    [Header("Collision Settings")]
+    [Header("Collision")]
     public bool isGrounded;
     private bool wallDetected;
 
@@ -74,6 +83,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
 
         speedMilestone = milestoneIncreaser;
         defaultSpeed = moveSpeed;
@@ -88,7 +98,19 @@ public class Player : MonoBehaviour
 
         slideTimerCounter -= Time.deltaTime;
         slideCooldownCounter -= Time.deltaTime;
-        Debug.Log(canClimb);
+
+        if (Input.GetKeyDown(KeyCode.K))
+            Knockback();
+
+        if (Input.GetKeyDown(KeyCode.L) && !isDead )
+            StartCoroutine(Die());
+
+        if (isDead)
+            return;
+
+        if (isKnocked)
+            return;
+
         if (playerUnlocked)
             Movement();
 
@@ -100,7 +122,68 @@ public class Player : MonoBehaviour
         FinishSlide();
         CheckInput();
         CheckForLedge();
+
     }
+
+    private IEnumerator Die()
+    {
+        isDead = true;
+        canBeKnocked = false;
+        rb.velocity = knockbackDir;
+        anim.SetBool("isDead", true);
+
+        yield return new WaitForSeconds(.5f);
+        rb.velocity = new Vector2(0, 0);
+    }
+
+
+
+    private IEnumerator Invincibility()
+    {
+        Color originalColor = sr.color;
+        Color darkenColor = new Color(sr.color.r, sr.color.g, sr.color.b, .5f);
+        canBeKnocked = false;
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.15f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.15f);
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.25f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.25f);
+
+        sr.color = darkenColor;
+        yield return new WaitForSeconds(.3f);
+
+        sr.color = originalColor;
+        yield return new WaitForSeconds(.3f);
+
+
+        sr.color = originalColor;
+        canBeKnocked = true;
+    }
+
+    private void Knockback()
+    {
+        if (!canBeKnocked)
+            return;
+
+        StartCoroutine(Invincibility());
+        isKnocked = true;
+        rb.velocity = knockbackDir;
+    }
+
+    public void FinishKnockback() => isKnocked = false;
 
     private void SpeedReset()
     {
@@ -133,6 +216,7 @@ public class Player : MonoBehaviour
         if (ledgeDetected && canGrabLedge)
         {
             canGrabLedge = false;
+            rb.gravityScale = 0;
 
             Vector2 ledgePosition = GetComponentInChildren<LedgeDetected>().transform.position;
 
@@ -148,6 +232,7 @@ public class Player : MonoBehaviour
     private void FinishClimb()
     {
         canClimb = false;
+        rb.gravityScale = 5;
         transform.position = climbOverPosition;
         Invoke("AllowLedgeGrab", .1f);
     }
@@ -225,7 +310,13 @@ public class Player : MonoBehaviour
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
         anim.SetBool("canClimb", canClimb);
+        anim.SetBool("isKnocked", isKnocked);
+
+        /* if (rb.velocity.y < -10)
+             anim.SetBool("canRoll", true);*/
     }
+
+    private void RollAnimFinished() => anim.SetBool("canRoll", false);
 
     private void CheckCollision()
     {
