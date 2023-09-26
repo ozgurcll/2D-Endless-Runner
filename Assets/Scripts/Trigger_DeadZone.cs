@@ -8,6 +8,6 @@ public class Trigger_DeadZone : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.GetComponent<Player>() != null)
-            GameManager.instance.RestartLevel();
+            GameManager.instance.GameEnded();
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 700742693479528052}
   - component: {fileID: -4015475250807154389}
   - component: {fileID: -783772486074162551}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.03823629, y: -0.014124706}
+  m_Offset: {x: 0.23487759, y: -0.014124706}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -111,7 +111,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.26493335, y: 0.09916034}
+  m_Size: {x: 0.658216, y: 0.45190808}
   m_EdgeRadius: 0
 --- !u!114 &-4015475250807154389
 MonoBehaviour:
@@ -125,6 +125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f78d555e4bc6f4e4987eecefdafdacec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dedFx: {fileID: 1844810877785115148, guid: 35c0c550f8ff048b3bc1c736e5a74025, type: 3}
+  brokeFx: {fileID: 1844810877785115148, guid: 2a0ac784d8c184a1b9bf4171f233729d, type: 3}
 --- !u!50 &-783772486074162551
 Rigidbody2D:
   serializedVersion: 4
@@ -142,7 +144,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0

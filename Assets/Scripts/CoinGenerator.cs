@@ -18,7 +18,8 @@ public class CoinGenerator : MonoBehaviour
         for (int i = 0; i < amountOfCoins; i++)
         {
             Vector3 offset = new Vector2(i - additionalOffset, 0);
-            Instantiate(coinPrefab, transform.position + offset, Quaternion.identity, transform);
+            Instantiate(coinPrefab, transform.position + offset, Quaternion.Euler(0f, 180f , 0f), transform);
+            
         }
         
     }
